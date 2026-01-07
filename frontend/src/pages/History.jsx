@@ -5,7 +5,6 @@ import Results from "../components/Results";
 export default function History() {
   const [history, setHistory] = useState([]);
 
-  // Fetch history once on page load
   useEffect(() => {
     fetch("http://localhost:5000/api/polls/history")
       .then((res) => res.json())

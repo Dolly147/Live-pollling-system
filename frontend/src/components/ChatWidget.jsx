@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSocket } from "../hooks/useSocket";
 
-/**
- * Floating chat + participants widget used by both Teacher and Student.
- */
 export default function ChatWidget({ role, userName }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState("chat"); // 'chat' | 'participants'
@@ -22,8 +19,7 @@ export default function ChatWidget({ role, userName }) {
       setParticipants(list || []);
     });
 
-    // initial load of participants for teacher
-    if (role === "teacher") {
+      if (role === "teacher") {
       emit("teacher:get_students");
     }
 

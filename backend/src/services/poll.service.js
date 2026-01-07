@@ -110,17 +110,11 @@ class PollService {
     ]);
   }
 
-  /**
-   * Soft-remove a student from active participants.
-   * We only clear socket_id so foreign keys from votes remain valid.
-   */
+  
   static async removeStudent(id) {
     await pool.query(`UPDATE students SET socket_id=NULL WHERE id=$1`, [id]);
   }
 
-  /**
-   * List only currently connected (non-kicked) students.
-   */
   static async listStudents() {
     const res = await pool.query(
       `SELECT id, name, socket_id FROM students WHERE socket_id IS NOT NULL ORDER BY name ASC`
@@ -169,17 +163,12 @@ class PollService {
     return history;
   }
 
-  /**
-   * Count registered students (per assignment we consider all registered as expected voters).
-   */
   static async getRegisteredStudentCount() {
     const res = await pool.query(`SELECT COUNT(*)::int AS count FROM students`);
     return res.rows[0]?.count || 0;
   }
 
-  /**
-   * Count unique voters for a given poll.
-   */
+  
   static async getUniqueVoteCountForPoll(pollId) {
     const res = await pool.query(
       `SELECT COUNT(DISTINCT student_id)::int AS count FROM votes WHERE poll_id=$1`,
@@ -188,12 +177,6 @@ class PollService {
     return res.rows[0]?.count || 0;
   }
 
-  /**
-   * Check whether all registered students have voted on this poll.
-   * If there are zero registered students we treat "all answered" as true
-   * so that a stuck ACTIVE poll with no participants does not block
-   * the teacher from asking a new question.
-   */
   static async haveAllStudentsAnswered(pollId) {
     const [students, voters] = await Promise.all([
       this.getRegisteredStudentCount(),
